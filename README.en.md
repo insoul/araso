@@ -346,7 +346,7 @@ The settings window has these panes, and changes apply at once.
 | Languages | converting words on or off, Japanese on or off, the Layouts card (Hangul: 2-set, 3-set final; English and romaji: QWERTY, Colemak, Colemak-DH), Japanese input and its options, resetting the kanji candidate order |
 | Keys | the language switch keys, Return, the pause key |
 | Apps | how sure a word must be to convert (Normal, Strict) and per-app behavior (`apps.json`) |
-| Dictionary | words you added and words learned, in one list (`dictionary.json`): **+** to type keys and pick their reading (English, Korean, Japanese) and app; from a row's ⋯, keep a learned word for good or remove it. A word corrected once shows how long until it's forgotten |
+| Dictionary | words you added and words learned, in one list (`dictionary.json`): **+** to type keys and pick their reading (English, Korean, Japanese) and app (also read so with a particle after them: add `js` as English and get `js에서는`); from a row's ⋯, keep a learned word for good or remove it. A word corrected once shows how long until it's forgotten |
 | Try Typing | how each word was decided, with scores, and adding its keys to the dictionary |
 | About | version, what changed, updates, uninstall |
 

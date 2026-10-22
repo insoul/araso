@@ -171,6 +171,15 @@ import Testing
         #expect(short.decide("tokiha", context: DecisionContext()).language == .english)     // ときは
         #expect(short.decide("tosms", context: DecisionContext()).language == .english)      // 새는
         #expect(short.decide("PCdp", context: DecisionContext()).output == "PC에")
+        // Two lowercase letters added by hand take a Korean particle; learned ones, or a
+        // Japanese particle, don't (so + が is そが).
+        let two = try self.engine([.init(keys: "js", language: .english, source: .user),
+                                   .init(keys: "so", language: .english, source: .user),
+                                   .init(keys: "ts", language: .english, source: .learned, strength: .sure)], japanese: true)
+        #expect(two.decide("jsdptjsms", context: DecisionContext()).output == "js에서는")
+        #expect(two.decide("jsfh", context: DecisionContext()).output == "js로")
+        #expect(two.decide("soga", context: DecisionContext()).explanation.hasSuffix("+particle") == false)
+        #expect(two.decide("tsdptjsms", context: DecisionContext()).output != "ts에서는")
         let off = try self.engine([.init(keys: "hoge", language: .japanese, source: .user)])
         #expect(off.decide("hogede", context: DecisionContext()).language == .english)
         let ghost = try self.engine([.init(keys: "ghos", language: .english, source: .user)])
