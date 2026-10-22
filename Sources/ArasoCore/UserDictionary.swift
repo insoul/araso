@@ -466,7 +466,8 @@ public final class DictionaryEngine: DecisionEngine, @unchecked Sendable {
     /// (github에), English or Japanese + Japanese particle as Japanese (githubで, hogeで). The
     /// longest word first; never keys that are an English word as a whole, and not after a
     /// one-key word. An English word, as in `ParticleSplitter`, needs 3 letters unless it has
-    /// capitals (so + が is そが), and doesn't split keys that read as a Korean word or one with
+    /// capitals (so + が is そが) or, before a Korean particle, was added by hand (js에서는: the
+    /// user said so). It doesn't split keys that read as a Korean word or one with
     /// a particle (sha + 들을 is 놈들을) or as clean romaji (toki + は is ときは). The same
     /// confidence as the engine's own splits, so a Strict app splits too.
     func withParticle(_ keys: String) -> Decision? {
@@ -489,12 +490,12 @@ public final class DictionaryEngine: DecisionEngine, @unchecked Sendable {
                 else { continue }
                 return remembered(Decision(language: .korean, confidence: SplittingEngine.confidence, output: front.text + particle, explanation: how), front.text, word.keys)
             case .english:
-                guard word.keys.count >= 3 || word.keys.contains(where: \.isUppercase) else { continue }
-                if let particle = Self.koreanParticle(tail), !readsAsKoreanWord(keys) {
+                let short = word.keys.count < 3 && !word.keys.contains(where: \.isUppercase)
+                if !short || word.source == .user, let particle = Self.koreanParticle(tail), !readsAsKoreanWord(keys) {
                     let mixed = MixedWord(english: word.keys, koreanKeys: tail, korean: particle)
                     return remembered(Decision(language: .mixed, confidence: SplittingEngine.confidence, output: mixed.text, explanation: how), word.keys, word.keys)
                 }
-                if japaneseParticles, !RomajiComposer.compose(keys).isClean, let particle = Self.japaneseParticle(tail) {
+                if !short, japaneseParticles, !RomajiComposer.compose(keys).isClean, let particle = Self.japaneseParticle(tail) {
                     return remembered(Decision(language: .japanese, confidence: SplittingEngine.confidence, output: word.keys + particle, explanation: how), word.keys, word.keys)
                 }
             case .japanese:
